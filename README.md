@@ -1,0 +1,1 @@
+# This repository contains the code for operating iRobotCreate2 robot, along with the basics of python in the MainCode folder.

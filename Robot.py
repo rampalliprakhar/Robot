@@ -17,6 +17,27 @@ class Robot:
 	song_load_cmd 		 =  b'\x8C'
 	play_song_cmd 		 =  b'\x8D'
 	leds 				 = b'\x8B'
+
+	# packet IDs definitions
+	wall					= b'\x08'
+	bumpsAndWheels			= b'\x07'
+	cliffLeft				= b'\x09'
+	cliffFrontLeft			= b'\x0A'
+	cliffFrontRight			= b'\x0B'
+	cliffRight				= b'\x0C'
+	virtualWall				= b'\x0D'
+	buttons					= b'\x12'
+	distance				= b'\x13'
+	angle					= b'\x14'
+	chargingState			= b'\x15'
+	voltage					= b'\x16'
+	temperature				= b'\x18'
+	batteryCharge			= b'\x19'
+	wallSignal				= b'\x1B'
+	cliffLeftSignal			= b'\x1C'
+	cliffFrontLeftSignal	= b'\x1D'
+	cliffFrontRightSignal	= b'\x1E'
+	cliffRightSignal		= b'\x1F'
     
 	# Constructor that connects the Roomba via the COM Port
 	def __init__(self, port):
@@ -85,7 +106,7 @@ class Robot:
 		self.sendCommand(self.drive_direct + wheelByte)
 
 	def leds(self, ledBits, powerColor, powerIntensity):
-		self.sendCommand(self.leds + ledBits + powerColor + powerIntensity)
+		self.sendCommand(self.leds + ledBits + powerColor + powerIntensity)	
 	
 	def digitLEDsASCII(self, digit3, digit2, digit1, digit0):
 		self.sendCommand(self.digitLEDsASCII + digit3 + digit2 + digit1 + digit0)
@@ -94,15 +115,14 @@ class Robot:
 		# Note durations in 1/64th of a second
 		QUARTER_NOTE = b'\x10'  # 64/64 = 1 second
 		HALF_NOTE = b'\x20'     # 128/64 = 2 seconds
+		
 		# Note Pitch
 		C4 = b'\x3C'
 		D4 = b'\x3E'
 		E4 = b'\x40'
 		F4 = b'\x41'
 		G4 = b'\x43'
-		A4 = b'\x45'
-		B4 = b'\x47'
-		C5 = b'\x48'
+
 		VERSE_ONE = (
             b'\x8C\x00\x0C'  +
             C4 + QUARTER_NOTE +  
@@ -118,6 +138,7 @@ class Robot:
             G4 + QUARTER_NOTE +  
             F4 + HALF_NOTE  
         )
+		
 		self.sendCommand(VERSE_ONE)
 		time.sleep(2.0)
 		self.sendCommand(b'\x8D\00')

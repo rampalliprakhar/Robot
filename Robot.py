@@ -20,6 +20,7 @@ class Robot:
     song_load_cmd = b"\x8C"
     play_song_cmd = b"\x8D"
     leds = b"\x8B"
+    digit_led = b'\xA4'
 
     # packet IDs definitions
     wall = b"\x08"
@@ -104,11 +105,11 @@ class Robot:
         """
         self.sendCommand(self.drive_direct + wheelByte)
 
-    def leds(self, ledBits, powerColor, powerIntensity):
+    def led(self, ledBits, powerColor, powerIntensity):
         self.sendCommand(self.leds + ledBits + powerColor + powerIntensity)
 
     def digitLEDsASCII(self, digit3, digit2, digit1, digit0):
-        self.sendCommand(self.digitLEDsASCII + digit3 + digit2 + digit1 + digit0)
+        self.sendCommand(self.digit_led + digit3 + digit2 + digit1 + digit0)
 
     def playSong(self):
         # Note durations in 1/64th of a second

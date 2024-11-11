@@ -1,12 +1,13 @@
 import tkinter as tk
 import keyboard
+import re
 from tkinter import Frame, Label, Button, Canvas, PhotoImage, Entry
 from functools import partial
 from PIL import Image, ImageTk
 from Robot import Robot  # Assuming Robot class is defined in Robot.py
 
 # Initialize the robot
-robot = Robot("COM9")
+robot = Robot("COM6")
 robot.startSafe()
 
 # Load images for different orientations
@@ -16,11 +17,27 @@ def load_images():
     angles = [0, 45, 90, 135, 180, 225, 270, 315]
     return [ImageTk.PhotoImage(pil_roombaPic_N.rotate(angle)) for angle in angles]
 
+def display_led(input_digits):
+    # Ensure the input is exactly 4 digits long
+    if re.match(r'^\d{4}$', input_digits):
+        # Convert each character to its corresponding ASCII byte
+        digit3 = bytes([ord(input_digits[0])])  # 1st digit ASCII
+        digit2 = bytes([ord(input_digits[1])])  # 2nd digit ASCII
+        digit1 = bytes([ord(input_digits[2])])  # 3rd digit ASCII
+        digit0 = bytes([ord(input_digits[3])])  # 4th digit ASCII
+
+        # Call the robot method with the ASCII bytes for each digit
+        robot.digitLEDsASCII(digit3, digit2, digit1, digit0)
+    else:
+        print("Invalid Input. Please enter exactly 4 digits.")
+
 # Update the displayed LED value
-def update_digit_leds():
+def update_digit_leds(event=None):
     input_value = four_digit_input.get()[:4]
     if len(input_value) == 4 and input_value.isdigit():
         four_digit_frame.config(text=input_value)
+        # Call the display_led function to handle the 4-digit input
+        display_led(input_value)
 
 # Movement functions
 def move_robot(action, image):
@@ -68,7 +85,7 @@ def LED(color):
     elif color == "yellow":
         robot.led(b"\x04", b"\xC0", b"\xFF")
     elif color == "orange":
-        robot.led(b"\x04", b"\x80", b"\xFF")
+        robot.led(b"\x04", b"\xA0", b"\xFF")
     elif color == "red":
         robot.led(b"\x04", b"\xFF", b"\x80")
     else:

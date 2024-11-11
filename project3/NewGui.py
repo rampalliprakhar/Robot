@@ -81,16 +81,16 @@ def play_music(): robot.playSong()  # Play tune using the robot's function
 # LED button function
 def LED(color):
     if color == "green":
-        robot.led(b"\x04",b"\x00",b"\x80")
+       robot.led(b"\x04", b"\x00", b"\x80")
     elif color == "yellow":
-        robot.led(b"\x04", b"\xC0", b"\xFF")
+       robot.led(b"\x04", b"\xFF", b"\xFF")
     elif color == "orange":
-        robot.led(b"\x04", b"\xA0", b"\xFF")
+       robot.led(b"\x04", b"\xFF", b"\x40")
     elif color == "red":
-        robot.led(b"\x04", b"\xFF", b"\x80")
+       robot.led(b"\x04", b"\xFF", b"\x00")
     else:
         print("Error: Invalid color")
-
+    
 # Setting up the main window
 root = tk.Tk()
 root.title("Robot Control GUI")

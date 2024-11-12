@@ -3,10 +3,11 @@ import keyboard
 from tkinter import Frame, Label, Button, Canvas, PhotoImage, Entry
 from functools import partial
 from PIL import Image, ImageTk
-from Robot import Robot  # Assuming Robot class is defined in Robot.py
+from Robot import Robot
+# from Robot import Robot  # Assuming Robot class is defined in Robot.py
 
 # Initialize the robot
-robot = Robot("COM6")
+robot = Robot("COM8")
 robot.startSafe()
 
 # Load images for different orientations
@@ -59,18 +60,18 @@ def sa_button_press(): move_robot("SouthWest", roomba_images[3])
 def sd_button_press(): move_robot("SouthEast", roomba_images[5])
 def button_release(): move_robot("Stop", roomba_images[0])
 def boost_button_press(): move_robot("Boost", roomba_images[0])
-def play_music(): Robot.playSong()  # Play tune using the robot's function
+def play_music(): robot.playSong()  # Play tune using the robot's function
 
 # LED button function
 def LED(color):
     if color == "green":
-        robot.leds(b"\x04\x00\x80")
+        robot.led(b"\x04",b"\x00", b"\x80")
     elif color == "yellow":
-        robot.leds(b"\x04\x05\x80")
+        robot.led(b"\x04", b"\x10", b"\xFF")
     elif color == "orange":
-        robot.leds(b"\x04\x30\x80")
+        robot.led(b"\x04", b"\x66", b"\xFF")
     elif color == "red":
-        robot.leds(b"\x04\xFF\x80")
+        robot.led(b"\x04", b"\xFF", b"\x80")
     else:
         print("Error: Invalid color")
 

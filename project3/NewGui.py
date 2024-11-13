@@ -1,11 +1,11 @@
 import tkinter as tk
 import keyboard
+import threading
 import re
 from tkinter import Frame, Label, Button, Canvas, PhotoImage, Entry
 from functools import partial
 from PIL import Image, ImageTk
 from Robot import Robot
-# from Robot import Robot  # Assuming Robot class is defined in Robot.py
 
 # Initialize the robot
 robot = Robot("COM8")
@@ -43,29 +43,32 @@ def update_digit_leds(event=None):
 
 # Movement functions
 def move_robot(action, image):
-    if action == "North":
-        robot.driveDirectFunction(b"\x02\x58\x02\x58")
-    elif action == "South":
-        robot.driveDirectFunction(b"\xFF\x38\xFF\x38")
-    elif action == "West":
-        robot.driveDirectFunction(b"\x00\xC8\xFF\x38")
-    elif action == "East":
-        robot.driveDirectFunction(b'\xFF\x38\x00\xC8')
-    elif action == "NorthWest":
-        robot.driveDirectFunction(b"\x02\x58\x01\x5E")
-    elif action == "NorthEast":
-        robot.driveDirectFunction(b"\x01\x5E\x02\x58")
-    elif action == "SouthWest":
-        robot.driveDirectFunction(b"\xFE\xA2\xFF\x06")
-    elif action == "SouthEast":
-        robot.driveDirectFunction(b"\xFF\x06\xFE\xA2")
-    elif action == "Boost":
-        robot.driveDirectFunction(b"\xFF\xC0\xFF\x51")
-    else:  # Stop
-        robot.driveDirectFunction(b"\x00\x00\x00\x00")
-    
-    canvas.delete(canvas.find_closest(350, 350))
-    canvas.create_image(350, 350, image=image)
+    def move():
+        if action == "North":
+            robot.driveDirectFunction(b"\x02\x58\x02\x58")
+        elif action == "South":
+            robot.driveDirectFunction(b"\xFF\x38\xFF\x38")
+        elif action == "West":
+            robot.driveDirectFunction(b"\x00\xC8\xFF\x38")
+        elif action == "East":
+            robot.driveDirectFunction(b'\xFF\x38\x00\xC8')
+        elif action == "NorthWest":
+            robot.driveDirectFunction(b"\x02\x58\x01\x5E")
+        elif action == "NorthEast":
+            robot.driveDirectFunction(b"\x01\x5E\x02\x58")
+        elif action == "SouthWest":
+            robot.driveDirectFunction(b"\xFE\xA2\xFF\x06")
+        elif action == "SouthEast":
+            robot.driveDirectFunction(b"\xFF\x06\xFE\xA2")
+        elif action == "Boost":
+            robot.driveDirectFunction(b"\xFF\xC0\xFF\x51")
+        else:  # Stop
+            robot.driveDirectFunction(b"\x00\x00\x00\x00")
+        
+        canvas.delete(canvas.find_closest(350, 350))
+        canvas.create_image(350, 350, image=image)
+
+    threading.Thread(target=move).start()
 
 # Button press functions
 def w_button_press(): move_robot("North", roomba_images[0])
@@ -78,7 +81,10 @@ def sa_button_press(): move_robot("SouthWest", roomba_images[3])
 def sd_button_press(): move_robot("SouthEast", roomba_images[5])
 def button_release(): move_robot("Stop", roomba_images[0])
 def boost_button_press(): move_robot("Boost", roomba_images[0])
-def play_music(): robot.playSong()  # Play tune using the robot's function
+def play_music(): 
+    def play_song():
+        robot.playSong() 
+    threading.Thread(target=play_song).start() # Play tune using the robot's function
 
 # LED button function
 def LED(color):
@@ -92,6 +98,8 @@ def LED(color):
         robot.led(b"\x04", b"\xFF", b"\x80")
     else:
         print("Error: Invalid color")
+    
+    threading.Thread(target=set_led).start()
 
 # Setting up the main window
 root = tk.Tk()

@@ -1,8 +1,7 @@
 import tkinter as tk
 import keyboard
 import threading
-import re
-from tkinter import Frame, Label, Button, Canvas, PhotoImage, Entry
+from tkinter import Frame, Label, Button, Canvas, PhotoImage, Entry, messagebox
 from functools import partial
 from PIL import Image, ImageTk
 from Robot import Robot
@@ -18,27 +17,28 @@ def load_images():
     angles = [0, 45, 90, 135, 180, 225, 270, 315]
     return [ImageTk.PhotoImage(pil_roombaPic_N.rotate(angle)) for angle in angles]
 
+# Function to check the 4 digit input
 def display_led(input_digits):
-    # Ensure the input is exactly 4 digits long
-    if re.match(r'^\d{4}$', input_digits):
-        # Convert each character to its corresponding ASCII byte
-        digit3 = bytes([ord(input_digits[0])])  # 1st digit ASCII
-        digit2 = bytes([ord(input_digits[1])])  # 2nd digit ASCII
-        digit1 = bytes([ord(input_digits[2])])  # 3rd digit ASCII
-        digit0 = bytes([ord(input_digits[3])])  # 4th digit ASCII
-
-        # Call the robot method with the ASCII bytes for each digit
-        robot.digitLEDsASCII(digit3, digit2, digit1, digit0)
+    if len(input_digits) == 4 and input_digits.isdigit():
+        ascii_digits = [ord(digit) for digit in input_digits]
+        if all(32 <= digit <= 126 for digit in ascii_digits):
+            robot.digitLEDsASCII(bytes([ascii_digits[3]]), 
+                                 bytes([ascii_digits[2]]), 
+                                 bytes([ascii_digits[1]]), 
+                                 bytes([ascii_digits[0]]))
+        else:
+            messagebox.showerror("Invalid Input", "Please enter only valid ASCII characters (32-126).")
     else:
-        print("Invalid Input. Please enter exactly 4 digits.")
+        messagebox.showerror("Invalid Input", "Please enter exactly 4 digits.")
 
-# Update the displayed LED value
+# Update the displayed LED Value
 def update_digit_leds(event=None):
-    input_value = four_digit_input.get()[:4]
-    if len(input_value) == 4 and input_value.isdigit():
-        four_digit_frame.config(text=input_value)
-        # Call the display_led function to handle the 4-digit input
-        display_led(input_value)
+    input_value = four_digit_input.get()[:4]                # Takes 4 digits from input
+    if input_value.isdigit() and len(input_value) == 4:
+        four_digit_frame.config(text=input_value)           # Update the label with entered value
+        display_led(input_value)                            # Sends the 4-digit input to the robot's LEDs
+    else:
+        messagebox.showerror("Invalid Input", "Please enter exactly 4 digits.")
 
 
 # Movement functions
@@ -64,7 +64,8 @@ def move_robot(action, image):
             robot.driveDirectFunction(b"\xFF\xC0\xFF\x51")
         else:  # Stop
             robot.driveDirectFunction(b"\x00\x00\x00\x00")
-        
+
+        # Update robot image on the canvas
         canvas.delete(canvas.find_closest(350, 350))
         canvas.create_image(350, 350, image=image)
 
@@ -88,17 +89,18 @@ def play_music():
 
 # LED button function
 def LED(color):
-    if color == "green":
-        robot.led(b"\x04",b"\x00", b"\x80")
-    elif color == "yellow":
-        robot.led(b"\x04", b"\x10", b"\xFF")
-    elif color == "orange":
-        robot.led(b"\x04", b"\x66", b"\xFF")
-    elif color == "red":
-        robot.led(b"\x04", b"\xFF", b"\x80")
-    else:
-        print("Error: Invalid color")
-    
+    def set_led():
+        if color == "green":
+            robot.led(b"\x04", b"\x00", b"\x80")
+        elif color == "yellow":
+            robot.led(b"\x04", b"\x10", b"\xFF")
+        elif color == "orange":
+            robot.led(b"\x04", b"\x66", b"\xFF")
+        elif color == "red":
+            robot.led(b"\x04", b"\xFF", b"\x80")
+        else:
+            print("Error: Invalid color")
+
     threading.Thread(target=set_led).start()
 
 # Setting up the main window
@@ -185,16 +187,17 @@ Button(boost_button_frame, image = boost_icon, bg="white", command=boost_button_
 play_button_frame = Frame(root, bg="white", width=400, height=100)
 play_button_frame.place(x=1430, y=630)
 play_icon = PhotoImage(file="project3/playButton.png")
-Button(play_button_frame, image = play_icon, bg="white", command=play_music).pack()
+Button(play_button_frame, image=play_icon, bg="white", command=play_music).pack()
 
-# Four-digit ASCII LED input
-four_digit_frame = Frame(root, bg="white", width=400, height=100)
+# 4-digit ASCII LED input
+four_digit_frame = tk.Frame(root, bg="white", width=400, height=100)
 four_digit_frame.place(x=1330, y=20)
-Label(four_digit_frame, text="4 Digit ASCII LED", pady=5, bg="white", font=("Comic Sans", 16)).pack()
+tk.Label(four_digit_frame, text="4 Digit ASCII LED", pady=5, bg="white", font=("Comic Sans", 16)).pack()
 
-four_digit_input = Entry(four_digit_frame, width=11, font=("Comic Sans", 17), bg="black", fg="white", insertbackground="white")
+# Entry widget to allow the user to input 4 digits
+four_digit_input = tk.Entry(four_digit_frame, width=11, font=("Comic Sans", 17), bg="black", fg="white", insertbackground="white")
 four_digit_input.pack(side=tk.RIGHT, padx=10)
-four_digit_input.bind("<Return>", lambda event: update_digit_leds())
+four_digit_input.bind("<Return>", update_digit_leds)  # Bind the Return (Enter) key to update the LEDs
 
 # Keyboard Binding
 keyboard.on_press_key("w", lambda e: w_button_press())

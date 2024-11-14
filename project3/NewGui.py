@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 from Robot import Robot
 
 # Initialize the robot
-robot = Robot("COM8")
+robot = Robot("COM5")
 robot.startSafe()
 
 # Load images for different orientations
@@ -22,10 +22,10 @@ def display_led(input_digits):
     if len(input_digits) == 4 and input_digits.isdigit():
         ascii_digits = [ord(digit) for digit in input_digits]
         if all(32 <= digit <= 126 for digit in ascii_digits):
-            robot.digitLEDsASCII(bytes([ascii_digits[3]]), 
-                                 bytes([ascii_digits[2]]), 
+            robot.digitLEDsASCII(bytes([ascii_digits[0]]), 
                                  bytes([ascii_digits[1]]), 
-                                 bytes([ascii_digits[0]]))
+                                 bytes([ascii_digits[2]]), 
+                                 bytes([ascii_digits[3]]))
         else:
             messagebox.showerror("Invalid Input", "Please enter only valid ASCII characters (32-126).")
     else:
@@ -35,7 +35,6 @@ def display_led(input_digits):
 def update_digit_leds(event=None):
     input_value = four_digit_input.get()[:4]                # Takes 4 digits from input
     if input_value.isdigit() and len(input_value) == 4:
-        four_digit_frame.config(text=input_value)           # Update the label with entered value
         display_led(input_value)                            # Sends the 4-digit input to the robot's LEDs
     else:
         messagebox.showerror("Invalid Input", "Please enter exactly 4 digits.")

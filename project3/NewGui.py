@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 from Robot import Robot
 
 # Initialize the robot
-robot = Robot("COM5")
+robot = Robot("COM6")
 robot.startSafe()
 
 # Load images for different orientations
@@ -94,13 +94,14 @@ def LED(color):
         elif color == "yellow":
             robot.led(b"\x04", b"\x10", b"\xFF")
         elif color == "orange":
-            robot.led(b"\x04", b"\x66", b"\xFF")
+            robot.led(b"\x04", b"\x20", b"\xFF")
         elif color == "red":
             robot.led(b"\x04", b"\xFF", b"\x80")
         else:
             print("Error: Invalid color")
 
     threading.Thread(target=set_led).start()
+
 
 # Setting up the main window
 root = tk.Tk()

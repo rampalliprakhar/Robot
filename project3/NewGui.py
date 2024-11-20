@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 from Robot import Robot
 
 # Initialize the robot
-robot = Robot("COM6")
+robot = Robot("COM4")
 robot.startSafe()
 
 # Load images for different orientations
@@ -21,7 +21,7 @@ def load_images():
 def display_led(input_digits):
     if len(input_digits) == 4 and input_digits.isdigit():
         ascii_digits = [ord(digit) for digit in input_digits]
-        if all(32 <= digit <= 126 for digit in ascii_digits):
+        if all(48 <= digit <= 57 for digit in ascii_digits):
             robot.digitLEDsASCII(bytes([ascii_digits[0]]), 
                                  bytes([ascii_digits[1]]), 
                                  bytes([ascii_digits[2]]), 
@@ -33,12 +33,13 @@ def display_led(input_digits):
 
 # Update the displayed LED Value
 def update_digit_leds(event=None):
-    input_value = four_digit_input.get()[:4]                # Takes 4 digits from input
-    if input_value.isdigit() and len(input_value) == 4:
-        display_led(input_value)                            # Sends the 4-digit input to the robot's LEDs
+    input_value = four_digit_input.get()  # Get the full input
+    if len(input_value) == 4 and input_value.isdigit():  # Ensure it's exactly 4 digits
+        display_led(input_value)  # Sends the 4-digit input to the robot's LEDs
+    elif len(input_value) > 4:
+        messagebox.showerror("Invalid Input", "Please enter exactly 4 digits. No more, no less.")  # Error for more than 4 digits
     else:
-        messagebox.showerror("Invalid Input", "Please enter exactly 4 digits.")
-
+        messagebox.showerror("Invalid Input", "Please enter exactly 4 digits.")  # Error for less than 4 digits
 
 # Movement functions
 def move_robot(action, image):
@@ -197,6 +198,17 @@ tk.Label(four_digit_frame, text="4 Digit ASCII LED", pady=5, bg="white", font=("
 # Entry widget to allow the user to input 4 digits
 four_digit_input = tk.Entry(four_digit_frame, width=11, font=("Comic Sans", 17), bg="black", fg="white", insertbackground="white")
 four_digit_input.pack(side=tk.RIGHT, padx=10)
+
+# Block any character input other than digits (0-9)
+def block_non_digit_input(event):
+    if event.keysym == "BackSpace":
+        return None
+    if event.char not in "0123456789":
+        return "break"  # Prevent the character from being typed into the Entry
+
+four_digit_input.bind("<Key>", block_non_digit_input)  # Bind to block non-digit input
+four_digit_input.bind("<Return>", update_digit_leds)  # Bind the Return (Enter) key to update the LEDs
+
 four_digit_input.bind("<Return>", update_digit_leds)  # Bind the Return (Enter) key to update the LEDs
 
 # Keyboard Binding

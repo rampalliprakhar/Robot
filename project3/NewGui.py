@@ -1,3 +1,12 @@
+'''
+Author: Prakhar Rampalli, Olive Challa, Tre'Stanley
+Date Created: 10/10/24
+Last Edited: 11/20/24
+Description: This code enables comprehensive control of the robot via a graphical user interface (GUI) built with Tkinter. 
+    It supports both GUI and keyboard inputs for seamless control, ensuring smooth operation through threading. 
+    The robot can perform a variety of actions, including driving and turning in any direction, while simultaneously adjusting LED colors, playing music, 
+    boosting speed, and modifying ASCII LED displays. 
+'''
 import tkinter as tk
 import keyboard
 import threading

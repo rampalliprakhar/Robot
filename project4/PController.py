@@ -1,26 +1,25 @@
 '''
 Author: Prakhar Rampalli, Olive Challa, Tre'Stanley
 Date Created: 11/14/24
-Last Edited: 11/20/24
+Last Edited: 11/21/24
 Description: This code implements a P-Controller (Proportional Controller) to ensure the robot moves forward in a straight 
     line while actively avoiding collisions with obstacles. 
     The controller continuously adjusts the robot's movement to maintain a straight path, responding to any detected deviations or obstructions, 
     ensuring smooth and safe navigation.
 '''
 import time
-import math
 import struct
 from Robot import Robot
 
 # Create an instance of the Robot class
 robot = Robot("COM9")
-robot.startSafe()  # Start the robot in safe mode
+robot.startSafe() 
 
 # Parameters for Wall Following
 TARGET_DISTANCE = 30  # Target distance from the wall in centimeters
-Kp = 0.5             # Proportional constant
-MAX_SPEED = 200      # Maximum speed
-MIN_SPEED = 50       # Minimum speed
+Kp = 0.5              # Proportional constant
+MAX_SPEED = 200       # Maximum speed
+MIN_SPEED = 50        # Minimum speed
 
 # Drive with a particular speed for both wheels
 def drive(left_speed, right_speed):
@@ -31,18 +30,18 @@ def drive(left_speed, right_speed):
 
 # Small rotation to avoid obstacles
 def avoid_obstacle():
-    drive(100, 50) 
+    drive(100, 50)  
     time.sleep(0.5)
-    drive(0, 0)
+    drive(0, 0) 
 
     # After avoiding the obstacle, turn back and follow the wall
-    drive(100, 100)
+    drive(MAX_SPEED, MAX_SPEED)
 
 # Get the range sensor data (distance to the wall)
 def get_range_sensor_data():
     robot.sendCommand(robot.wallSignal)  # Request wall sensor data
     data = robot.connection.readline().strip()
-    return int(data) if data else 0  # Return distance in cm (default to 0 if no data)
+    return int(data) if data else 0  # Return distance in cm
 
 # Get bump sensor data (detect bump status)
 def get_bump_sensor_data():
@@ -80,5 +79,5 @@ def follow_wall():
 
         time.sleep(0.1)
 
-# Start the wall-following behavior
+# Execute the function
 follow_wall()

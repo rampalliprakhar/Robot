@@ -1,7 +1,7 @@
 '''
 Author: Prakhar Rampalli, Olive Challa, Tre'Stanley
 Date Created: 10/10/24
-Last Edited: 11/20/24
+Last Edited: 11/23/24
 Description: This code enables comprehensive control of the robot via a graphical user interface (GUI) built with Tkinter. 
     It supports both GUI and keyboard inputs for seamless control, ensuring smooth operation through threading. 
     The robot can perform a variety of actions, including driving and turning in any direction, while simultaneously adjusting LED colors, playing music, 
@@ -30,13 +30,10 @@ def load_images():
 def display_led(input_digits):
     if len(input_digits) == 4 and input_digits.isdigit():
         ascii_digits = [ord(digit) for digit in input_digits]
-        if all(48 <= digit <= 57 for digit in ascii_digits):
-            robot.digitLEDsASCII(bytes([ascii_digits[0]]), 
-                                 bytes([ascii_digits[1]]), 
-                                 bytes([ascii_digits[2]]), 
-                                 bytes([ascii_digits[3]]))
-        else:
-            messagebox.showerror("Invalid Input", "Please enter only valid ASCII characters (32-126).")
+        robot.digitLEDsASCII(bytes([ascii_digits[0]]), 
+                            bytes([ascii_digits[1]]), 
+                            bytes([ascii_digits[2]]), 
+                            bytes([ascii_digits[3]]))
     else:
         messagebox.showerror("Invalid Input", "Please enter exactly 4 digits.")
 
@@ -205,7 +202,7 @@ four_digit_frame.place(x=1330, y=20)
 tk.Label(four_digit_frame, text="4 Digit ASCII LED", pady=5, bg="white", font=("Comic Sans", 16)).pack()
 
 # Entry widget to allow the user to input 4 digits
-four_digit_input = tk.Entry(four_digit_frame, width=11, font=("Comic Sans", 17), bg="black", fg="white", insertbackground="white")
+four_digit_input = tk.Entry(four_digit_frame, width=4, font=("Comic Sans", 17), bg="black", fg="white", insertbackground="white")
 four_digit_input.pack(side=tk.RIGHT, padx=10)
 
 # Block any character input other than digits (0-9)
@@ -216,8 +213,6 @@ def block_non_digit_input(event):
         return "break"  # Prevent the character from being typed into the Entry
 
 four_digit_input.bind("<Key>", block_non_digit_input)  # Bind to block non-digit input
-four_digit_input.bind("<Return>", update_digit_leds)  # Bind the Return (Enter) key to update the LEDs
-
 four_digit_input.bind("<Return>", update_digit_leds)  # Bind the Return (Enter) key to update the LEDs
 
 # Keyboard Binding

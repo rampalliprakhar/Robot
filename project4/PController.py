@@ -30,24 +30,41 @@ def drive(left_speed, right_speed):
 
 # Small rotation to avoid obstacles
 def avoid_obstacle():
-    drive(100, 50)  
+    print("Obstacle detected, avoiding...")
+    # Move backward
+    drive(-100, -100)
     time.sleep(0.5)
-    drive(0, 0) 
-
+    drive(100, -100)
+    time.sleep(1)    
     # After avoiding the obstacle, turn back and follow the wall
     drive(MAX_SPEED, MAX_SPEED)
 
 # Get the range sensor data (distance to the wall)
 def get_range_sensor_data():
-    robot.sendCommand(robot.wallSignal)  # Request wall sensor data
-    data = robot.connection.readline().strip()
-    return int(data) if data else 0  # Return distance in cm
+    try:
+        # Use the twoByteSensor function to get the two-byte response from the wallSignal sensor
+        sensor_data = robot.twoByteSensor(robot.wallSignal)
+        
+        # Check the format of the returned data
+        if sensor_data:
+            # Convert the response from binary string format to an integer
+            distance = struct.unpack('>H', sensor_data.encode())[0]
+            return distance  # Return the distance as an integer
+        else:
+            return 0  # if no data was received
+    except Exception as e:
+        print(f"Error getting sensor data: {e}")
+        return 0  # Return a default value in case of an error
 
 # Get bump sensor data (detect bump status)
 def get_bump_sensor_data():
-    robot.sendCommand(robot.bumpsAndWheels)  # Request bump sensor data
-    data = robot.connection.readline().strip()
-    return int(data) if data else 0  # Return bump status (0 = no bump, 1 = bump detected)
+    try:
+        robot.sendCommand(robot.bumpsAndWheels)         # Request bump sensor data
+        data = robot.connection.readline().strip()      # Read the response
+        return int(data) if data else 0                 # Return 1 if bump detected, otherwise 0
+    except Exception as e:
+        print(f"Error reading bump sensor: {e}")
+        return 0                                        # Return 0 in case of an error
 
 # Main wall-following function
 def follow_wall():
@@ -66,8 +83,15 @@ def follow_wall():
         elif control_signal < MIN_SPEED:
             control_signal = MIN_SPEED
 
-        # Here, both wheels move at the same speed based on the control signal
-        drive(control_signal, control_signal)
+        # Adjust wheel speeds based on the error
+        left_speed = MAX_SPEED - control_signal
+        right_speed = MAX_SPEED + control_signal
+        
+        left_speed = max(MIN_SPEED, min(MAX_SPEED, left_speed))
+        right_speed = max(MIN_SPEED, min(MAX_SPEED, right_speed))
+
+        # Drive the robot with the adjusted speeds
+        drive(left_speed, right_speed)
 
         # Check for obstacles using bump sensors
         if bump_status > 0:

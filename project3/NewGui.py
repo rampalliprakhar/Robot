@@ -16,7 +16,7 @@ from PIL import Image, ImageTk
 from Robot import Robot
 
 # Initialize the robot
-robot = Robot("COM4")
+robot = Robot("COM7")
 robot.startSafe()
 
 # Load images for different orientations
@@ -53,7 +53,7 @@ def move_robot(action, image):
         if action == "North":
             robot.driveDirectFunction(b"\x02\x58\x02\x58")
         elif action == "South":
-            robot.driveDirectFunction(b"\xFF\x38\xFF\x38")
+            robot.driveDirectFunction(b"\xFD\xA8\xFD\xA8")
         elif action == "West":
             robot.driveDirectFunction(b"\x00\xC8\xFF\x38")
         elif action == "East":

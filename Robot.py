@@ -197,7 +197,7 @@ class Robot:
             str: The binary string representation of the sensor data (two bytes combined).
         """
         self.sendCommand(self.sensors_cmd + packetID)
-        return self.read(2)
+        return self.connection.readline().decode('utf-8').strip()
 
     def led(self, ledBits, powerColor, powerIntensity):
         """

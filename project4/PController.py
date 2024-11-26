@@ -13,7 +13,7 @@ from Robot import Robot
 
 # Create an instance of the Robot class
 robot = Robot("COM9")
-robot.startSafe() 
+robot.startSafe()
 
 # Parameters for Wall Following
 TARGET_DISTANCE = 30  # Target distance from the wall in centimeters
@@ -34,9 +34,9 @@ def avoid_obstacle():
     # Move backward
     drive(-100, -100)
     time.sleep(0.5)
-    drive(100, -100)
-    time.sleep(1)    
-    # After avoiding the obstacle, turn back and follow the wall
+    drive(100, 50)
+    time.sleep(1)
+    # Move forward again and continue wall following
     drive(MAX_SPEED, MAX_SPEED)
 
 # Get the range sensor data (distance to the wall)

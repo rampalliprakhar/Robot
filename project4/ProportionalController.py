@@ -2,7 +2,7 @@
 Author: Prakhar Rampalli, Olive Challa, Tre'Stanley
 Date Created: 11/14/24
 Last Edited: 11/21/24
-Description: This code implements a P-Controller (Proportional Controller) to ensure the robot moves forward in a straight 
+Description: This code implements a Proportional Controller to ensure the roomba moves forward in a straight 
     line while actively avoiding collisions with obstacles. 
     The controller continuously adjusts the robot's movement to maintain a straight path, responding to any detected deviations or obstructions, 
     ensuring smooth and safe navigation.

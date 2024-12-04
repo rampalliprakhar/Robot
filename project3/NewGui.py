@@ -187,13 +187,13 @@ for button in [w_button, s_button, a_button, d_button, wa_button, wd_button, sa_
 # Boost button
 boost_button_frame = Frame(root, bg="white", width=400, height=100)
 boost_button_frame.place(x=1430, y=730)
-boost_icon = PhotoImage(file="project3/boostIcon.png")
+boost_icon = PhotoImage(file="project3/boosterIcon.png")
 Button(boost_button_frame, image = boost_icon, bg="white", command=boost_button_press).pack()
 
 # Play button
 play_button_frame = Frame(root, bg="white", width=400, height=100)
 play_button_frame.place(x=1430, y=630)
-play_icon = PhotoImage(file="project3/playButton.png")
+play_icon = PhotoImage(file="project3/playMusicButton.png")
 Button(play_button_frame, image=play_icon, bg="white", command=play_music).pack()
 
 # 4-digit ASCII LED input

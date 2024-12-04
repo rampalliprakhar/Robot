@@ -2,7 +2,7 @@
 Author: Prakhar Rampalli, Olive Challa, Tre'Stanley
 Written: 09/24/24
 Compilation: TuneRobot.py
-Description: A program that sends command to the iCreateRobot2 to play happy birthday song. 
+Description: A program that sends command to the roomba to play happy birthday song. 
     The song is not completely accurate, revisions will be added in the near future.
 '''
 import serial
